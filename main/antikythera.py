@@ -1,4 +1,5 @@
 from typing import Dict, List, Optional
+import time
 
 
 class Rotor:
@@ -27,7 +28,6 @@ class Rotor:
     def reset_rotation(self):
         self.rotation_increment = 0
         self.rotated_contents = self._contents.copy()
-        print(self.to_str())
 
     def to_str(self) -> str:
         result_str = f"Rotation increment: {self.rotation_increment}\n"
@@ -73,21 +73,61 @@ class Antikythera:
         assert len(column) == self.num_layers
         return column
 
-    def solve(self, increment: int = 0):
+    def is_solved(self) -> bool:
+        if sum(self.read_column(0)) == self.target_sum:
+            for col in range(1, self.num_columns):
+                if not sum(self.read_column(col)) == self.target_sum:
+                    return False
+            return True
+        return False
+
+    perms: int = 0
+
+    def _solve(self, rotor, rotation_increment: int = 0) -> bool:
+        self.perms += 1
+        if self.is_solved():
+            print("Solution found, returning true")
+            return True
+            
+        if rotor > 0:
+            for inc in range(self.num_columns):
+                self.rotors[rotor].rotate()
+                if self._solve(rotor - 1):
+                    return True
+        else:
+            if rotation_increment >= self.num_columns:
+                self.rotors[rotor].reset_rotation()
+                return False
+            self.rotors[rotor].rotate()
+            return self._solve(rotor, rotation_increment + 1)
+
+        return False
+
+    def solve(self):
         if len(self.rotors) != self.num_rotors:
             raise Exception(
                 f"Cannot solve puzzle: {self.num_rotors} rotors specified but {len(self.rotors)} are present"
             )
 
-        # for rotor in self.rotors:
-        #     if self.column_sum(0) == self.target_sum:
-        # for col in range(self.num_columns):
-        #     if self.column_sum(col) != 42:
-        #         return
-        return
+        tic = time.perf_counter()
+        self._solve(self.num_rotors - 1)
+        toc = time.perf_counter()
+
+        if self.is_solved():
+            print("Solution found!")
+        else:
+            print("Unable to solve the puzzle!")
+
+        print(
+            f"Finished in {toc-tic:0.4f}s after trying {self.perms} permutations"
+        )
+        print(self.to_str())
+        self.perms = 0
 
     def to_str(self):
         result_str = f"A {self.num_rotors}-rotor puzzle with {self.num_columns} columns of {self.num_layers} layers of numbers that sum up to {self.target_sum}.\n"
+        if self.is_solved():
+            result_str += "The puzzle is solved!\n"
         for col in range(self.num_columns):
             column = self.read_column(col)
             result_str += f"Column {col}: {column} = {sum(column)}\n"

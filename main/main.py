@@ -32,7 +32,7 @@ ant.add_rotor(
         {
             0: [7, None, 9, None, 7, 14, 11, None, 8, None, 16, None],
             1: [9, None, 2, 3, 6, None, 14, 12, 9, None, 9, 2],
-            2: [3, 26, 6, None, 2, 13, 9, None, 3, 20, 3, 12],
+            2: [3, 26, 6, None, 2, 13, 9, None, 17, 19, 3, 12],
             3: [1, None, 9, None, 12, None, 6, None, 10, None, 10, None],
         }
     )
@@ -47,20 +47,4 @@ ant.add_rotor(
         }
     )
 )
-print(ant.rotors[1].rotated_contents[0])
-print(ant.rotors[1].rotated_contents[1])
-print(ant.to_str())
-print("ROTATING")
-ant.rotors[0].rotate()
-print(ant.to_str())
-
-print(ant.rotors[1].to_str())
-ant.rotors[1].rotate()
-ant.rotors[1].rotate()
-ant.rotors[1].rotate()
-ant.rotors[1].rotate()
-ant.rotors[1].rotate()
-ant.rotors[1].rotate()
-ant.rotors[1].rotate()
-print(ant.rotors[1].to_str())
 ant.solve()
