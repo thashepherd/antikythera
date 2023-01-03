@@ -1,8 +1,6 @@
 from typing import List
 
-class Rotor:
-    def __init__(self, contents):
-        self.contents = contents
+from rotor import Rotor
 
 
 class Antikythera:
