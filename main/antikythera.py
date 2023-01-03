@@ -1,39 +1,6 @@
-from typing import Dict, List, Optional
+from typing import List
+from rotor import Rotor
 import time
-
-
-class Rotor:
-    _contents: Dict[int, List[Optional[int]]]
-
-    rotation_increment: int = 0
-    rotated_contents: Dict[int, List[Optional[int]]]
-
-    def __init__(self, contents: Dict[int, List[Optional[int]]]):
-        for layer in contents:
-            assert len(contents[layer]) == len(contents[0])
-
-        self._contents = contents
-        self.rotated_contents = self._contents.copy()
-
-    def num_columns(self) -> int:
-        return len(self._contents[0])
-
-    def rotate(self):
-        self.rotation_increment += 1
-        for layer in self.rotated_contents.keys():
-            self.rotated_contents[layer] = (
-                self.rotated_contents[layer][1:] + self.rotated_contents[layer][:1]
-            )
-
-    def reset_rotation(self):
-        self.rotation_increment = 0
-        self.rotated_contents = self._contents.copy()
-
-    def to_str(self) -> str:
-        result_str = f"Rotation increment: {self.rotation_increment}\n"
-        for layer in self.rotated_contents:
-            result_str += f"Layer {layer}: {self.rotated_contents[layer]} \n"
-        return result_str
 
 
 class Antikythera:
@@ -84,21 +51,6 @@ class Antikythera:
             return True
         return False
 
-    permutations: int = 0
-
-    def _solve(self, rotor) -> bool:
-        self.permutations += 1
-        if self.is_solved():
-            return True
-
-        if rotor > 0:
-            for inc in range(self.num_columns):
-                self.rotors[rotor].rotate()
-                if self._solve(rotor - 1):
-                    return True
-
-        return False
-
     def solve(self):
         if len(self.rotors) != self.num_rotors:
             raise Exception(
@@ -110,8 +62,23 @@ class Antikythera:
         toc = time.perf_counter()
 
         print(
-            f"Solution found in {toc-tic:0.4f}s at permutation {self.permutations}:\n{self.to_str()}"
+            f"Solution found in {toc-tic:0.4f}s at permutation {self._permutations}:\n{self.to_str()}"
         )
+
+    _permutations: int = 0
+
+    def _solve(self, rotor) -> bool:
+        self._permutations += 1
+        if self.is_solved():
+            return True
+
+        if rotor > 0:
+            for inc in range(self.num_columns):
+                self.rotors[rotor].rotate()
+                if self._solve(rotor - 1):
+                    return True
+
+        return False
 
     def to_str(self):
         result_str = ""

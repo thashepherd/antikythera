@@ -1,4 +1,4 @@
-from main.antikythera import Rotor
+from main.rotor import Rotor
 
 
 def test_rotate():
