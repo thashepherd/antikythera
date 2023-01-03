@@ -1,3 +1,5 @@
+from antikythera import Antikythera, Rotor
+
 # This puzzle is made of a number of rotors, each having columns of numbers radiating out from the center.
 # Each rotor has an equal number of columns. Columns are represented as a List[Optional[int]]. Columns may have 'holes' or be missing entirely.
 # The index of the Dict[int, List[Optional[int]]] below represents the position of the column.
@@ -5,9 +7,6 @@
 # Rotors are added from the top down.
 # The objective of the puzzle is to rotate the rotors until each column adds up to 42.
 
-from antikythera import Antikythera, Rotor
-
-# Set up the specific puzzle I got for Christmas
 ant = Antikythera(5, 4, 12, 42)
 ant.add_rotor(Rotor({0: [15, None, 8, None, 3, None, 6, None, 10, None, 7, None]}))
 ant.add_rotor(
@@ -47,4 +46,6 @@ ant.add_rotor(
         }
     )
 )
+print(f"\n{ant.to_str()}")
+input("Press ENTER to continue\n")
 ant.solve()

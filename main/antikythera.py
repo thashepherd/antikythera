@@ -49,6 +49,9 @@ class Antikythera:
         self.num_layers = layers
         self.num_columns = columns
         self.target_sum = sum
+        print(
+            f"Creating a {self.num_rotors}-rotor puzzle with {self.num_columns} columns of {self.num_layers} layers of numbers that sum up to {self.target_sum}."
+        )
 
     def add_rotor(self, rotor: Rotor):
         if rotor.num_columns() != self.num_columns:
@@ -81,25 +84,18 @@ class Antikythera:
             return True
         return False
 
-    perms: int = 0
+    permutations: int = 0
 
-    def _solve(self, rotor, rotation_increment: int = 0) -> bool:
-        self.perms += 1
+    def _solve(self, rotor) -> bool:
+        self.permutations += 1
         if self.is_solved():
-            print("Solution found, returning true")
             return True
-            
+
         if rotor > 0:
             for inc in range(self.num_columns):
                 self.rotors[rotor].rotate()
                 if self._solve(rotor - 1):
                     return True
-        else:
-            if rotation_increment >= self.num_columns:
-                self.rotors[rotor].reset_rotation()
-                return False
-            self.rotors[rotor].rotate()
-            return self._solve(rotor, rotation_increment + 1)
 
         return False
 
@@ -110,24 +106,15 @@ class Antikythera:
             )
 
         tic = time.perf_counter()
-        self._solve(self.num_rotors - 1)
+        self._solve(rotor=self.num_rotors - 1)
         toc = time.perf_counter()
 
-        if self.is_solved():
-            print("Solution found!")
-        else:
-            print("Unable to solve the puzzle!")
-
         print(
-            f"Finished in {toc-tic:0.4f}s after trying {self.perms} permutations"
+            f"Solution found in {toc-tic:0.4f}s at permutation {self.permutations}:\n{self.to_str()}"
         )
-        print(self.to_str())
-        self.perms = 0
 
     def to_str(self):
-        result_str = f"A {self.num_rotors}-rotor puzzle with {self.num_columns} columns of {self.num_layers} layers of numbers that sum up to {self.target_sum}.\n"
-        if self.is_solved():
-            result_str += "The puzzle is solved!\n"
+        result_str = ""
         for col in range(self.num_columns):
             column = self.read_column(col)
             result_str += f"Column {col}: {column} = {sum(column)}\n"
