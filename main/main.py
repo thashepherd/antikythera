@@ -47,5 +47,3 @@ ant.add_rotor(
     )
 )
 print(f"\n{ant.to_str()}")
-input("Press ENTER to continue\n")
-ant.solve()

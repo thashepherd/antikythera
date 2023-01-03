@@ -51,35 +51,6 @@ class Antikythera:
             return True
         return False
 
-    def solve(self):
-        if len(self.rotors) != self.num_rotors:
-            raise Exception(
-                f"Cannot solve puzzle: {self.num_rotors} rotors specified but {len(self.rotors)} are present"
-            )
-
-        tic = time.perf_counter()
-        self._solve(rotor=self.num_rotors - 1)
-        toc = time.perf_counter()
-
-        print(
-            f"Solution found in {toc-tic:0.4f}s at permutation {self._permutations}:\n{self.to_str()}"
-        )
-
-    _permutations: int = 0
-
-    def _solve(self, rotor) -> bool:
-        self._permutations += 1
-        if self.is_solved():
-            return True
-
-        if rotor > 0:
-            for inc in range(self.num_columns):
-                self.rotors[rotor].rotate()
-                if self._solve(rotor - 1):
-                    return True
-
-        return False
-
     def to_str(self):
         result_str = ""
         for col in range(self.num_columns):
