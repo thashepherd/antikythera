@@ -1,4 +1,4 @@
-from antikythera import Antikythera, Rotor
+from main import Antikythera, Rotor
 
 # This puzzle is made of a number of rotors, each having columns of numbers radiating out from the center.
 # Each rotor has an equal number of columns. Columns are represented as a List[Optional[int]]. Columns may have 'holes' or be missing entirely.

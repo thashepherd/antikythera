@@ -1,6 +1,7 @@
 from typing import List
-from rotor import Rotor
 import time
+
+from main.rotor import Rotor
 
 
 class Antikythera:
@@ -21,6 +22,10 @@ class Antikythera:
         )
 
     def add_rotor(self, rotor: Rotor):
+        if len(self.rotors) >= self.num_rotors:
+            raise Exception(
+                f"Cannot add more rotors: {len(self.rotors)} rotors are already present"
+            )
         if rotor.num_columns() != self.num_columns:
             raise Exception(
                 f"Added rotor has {rotor.num_columns()} columns but this puzzle is set for {self.num_columns}"
